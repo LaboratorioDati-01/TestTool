@@ -106,6 +106,9 @@ def main():
     Price_Wind = st.number_input("Prezzo dell'Energia Eolica", value=20)
     Price_Thermal = st.number_input("Prezzo dell'Energia Termica", value=120)
 
+    # Calcola la percentuale e visualizzala
+    flex_percentuale = flex * 100
+    st.write(f"Fattore di Flessibilità: {flex_percentuale}%")
     # Bottone per eseguire il calcolo
     if st.button("Calcola Price Flex"):
         result = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
