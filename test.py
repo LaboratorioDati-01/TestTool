@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import random
+# Imposta un seed specifico
+random.seed(42)  # Puoi usare qualsiasi numero come seed
 
 # Funzione principale per eseguire il calcolo
 def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal):
@@ -39,6 +41,7 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     def genera_variazione_demand():
         return random.uniform(-0.4, 0.4)
     
+    #Distribuzione gaussiana
     def genera_variazione_wind():
         return random.uniform(-0.535, 0.62)
     
