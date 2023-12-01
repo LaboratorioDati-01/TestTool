@@ -22,9 +22,9 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     Min_Thermal = 0  # Minima produzione di energia termica (non può essere negativa).
     
     # Parametri di flessibilità della domanda.
-    flex = 0.1  # Fattore di flessibilità, tra 0.1 e 1.
-    Band = 0  # Intervallo di flessibilità, compreso tra 10 e 50.
-    Slope = 50  # Pendenza, utilizzata per calcolare l'adattamento della domanda.
+    # flex = 0.1  # Fattore di flessibilità, tra 0.1 e 1.
+    # Band = 0  # Intervallo di flessibilità, compreso tra 10 e 50.
+    # Slope = 50  # Pendenza, utilizzata per calcolare l'adattamento della domanda.
     
     # Calcolo della domanda flessibile.
     C1 = ToT_Demand * (1 - flex)  # Domanda non flessibile.
