@@ -84,7 +84,7 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     Price_Flex = (DRe_s - DIe_s - DTe_s) / ABS_Delta_Fe_s
 
     # Alla fine, restituisci il valore calcolato di Price_Flex
-    return Price_Flex
+    return Price_Flex,C1,C2
 
 # Interfaccia utente Streamlit
 def main():
@@ -112,10 +112,13 @@ def main():
     st.write(f"Fattore di Flessibilità: {flex_percentuale}%")
     st.write(f"Intervallo di flessibilità(BAND): {Band}")
     st.write(f"Pendenza, utilizzata per calcolare l'adattamento della domanda(SLOPE): {Slope}")
+ 
     # Bottone per eseguire il calcolo
     if st.button("Calcola Price Flex"):
-        result = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
-        st.success(f"Price Flex calcolato: {result}")
+        price_flex, c1, c2 = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
+        st.success(f"Price Flex calcolato: {price_flex}")
+        st.write(f"C1 (Domanda non flessibile): {c1}")
+        st.write(f"C2 (Domanda flessibile): {c2}")
 
 if __name__ == "__main__":
     main()
