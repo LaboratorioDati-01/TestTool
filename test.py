@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import random
+import math
+import matplotlib.pyplot as plt
+
 # Imposta un seed specifico
 random.seed(42)  # Puoi usare qualsiasi numero come seed
 
@@ -8,6 +11,13 @@ random.seed(42)  # Puoi usare qualsiasi numero come seed
 def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal):
     # (Inserisci qui il codice che hai fornito, adattandolo per utilizzare queste variabili)
     # Definizione delle variabili iniziali relative alla gestione dell'energia.
+    # Percorso del file Excel
+    file_path = './temp_flex.xlsx' 
+    # Carica il secondo foglio del file Excel
+    # Nota: in pandas, puoi specificare il foglio tramite il nome o l'indice (iniziando da 0)
+    df = pd.read_excel(file_path, sheet_name=1)  # '1' sta per il secondo foglio
+    # Trasforma l'intero DataFrame in un array NumPy e poi in una lista
+    vettore_df = df.values.flatten().tolist()
     ToT_Demand = 4700  # Domanda totale di energia.
     Wind = 1700  # Produzione di energia eolica.
     
@@ -41,19 +51,26 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     def genera_variazione_demand():
         return random.uniform(-0.4, 0.4)
     
-    #Distribuzione gaussiana
-    def genera_variazione_wind():
-        return random.uniform(-0.535, 0.62)
+    varianza = 300  # Varianza desiderata
+    deviazione_standard = math.sqrt(varianza)  # Calcolo della deviazione standard
+    
+    # Creazione di un vettore di variazioni basate su una distribuzione gaussiana
+    num_variazioni = 1000
+    Variazione_wind = [random.gauss(Wind, deviazione_standard) for _ in range(num_variazioni)]
+    
+    # Assicurati che i valori di We siano realistici (ad esempio, non negativi)
+    We = [max(0, var) for var in Variazione_wind]
     
     # Creazione di vettori di variazioni casuali per domanda e produzione eolica.
     num_variazioni = 1000
-    Variazione_demand = [genera_variazione_demand() for _ in range(num_variazioni)]
-    Variazione_wind = [genera_variazione_wind() for _ in range(num_variazioni)]
+    # Variazione_demand = [genera_variazione_demand() for _ in range(num_variazioni)]
     
-    # Calcolo delle variazioni della domanda e della produzione eolica.
-    C1e = [C1 * (1 + var) for var in Variazione_demand]
-    We = [Wind * (1 + var) for var in Variazione_wind]
-    
+    # Calcolo del vettore delle variazioni della domanda
+    C1e = []
+    for i in vettore_df:
+        Variazione_demand_calc = C1*(1 + i) 
+        C1e.append(Variazione_demand_calc)
+        
     # Calcolo dell'importazione di energia considerando le variazioni.
     Ie = [max(min(C1e[k] + C2 - We[k], Max_Import), Min_Import) for k in range(1000)]
     
@@ -85,7 +102,7 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     
     # Calcolo del prezzo della flessibilità.
     Price_Flex = (DRe_s - DIe_s - DTe_s) / ABS_Delta_Fe_s
-
+    Price_Flex = round(Price_Flex, 2)
     # Alla fine, restituisci il valore calcolato di Price_Flex
     return Price_Flex,C1,C2
 
@@ -107,7 +124,7 @@ def main():
     Price_Wind = st.number_input("Wind Energy Price (per unit)", value=20)
     Price_Thermal = st.number_input("Thermal Energy Price (per unit)", value=120)
     flex = st.slider("Flexibility Factor (from 0.01 to 0.1)", 0.01, 0.1, 0.01)
-    Band = st.number_input("Flexibility Range (BAND)", value=0)
+    Band = st.number_input("Flexibility Range (BAND)", value=10)
     Slope = st.number_input("Slope (SLOPE)", value=50)
 
 
@@ -119,11 +136,27 @@ def main():
     
     # Button to perform the calculation
     if st.button("Calculate Price Flex"):
-        price_flex, c1, c2 = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
-        st.success(f"Calculated Price Flex: {price_flex}")
+        Price_Flex, c1, c2 = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
+        st.success(f"Calculated Price Flex: {Price_Flex}")
         st.write(f"C1 (Non-flexible Demand): {c1}")
         st.write(f"C2 (Flexible Demand): {c2}")
 
+    # # Esempio di valori di 'flex' da 0.01 a 0.1
+    flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
+    
+    # # Esempio di corrispondenti valori di 'Price Flex'
+    price_flex_values = [613.62, 353.48, 267.915, 225.46, 200.32, 183.94, 172.55, 164.17, 157.81, 153.08]  # Sostituisci con i tuoi valori reali
+    
+     # Creazione del plot
+    plt.figure()
+    plt.plot(flex_values, price_flex_values, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='black')  # Marker sferico vuoto
+    plt.scatter([flex], [Price_Flex], color='red', s=50)  # Pallino rosso più grande
+    plt.title("Price Flex BAND10")
+    plt.xlabel("Flex")
+    plt.ylabel("Price Flex")
+    plt.grid(True)
 
+    # Visualizzazione del plot in Streamlit
+    st.pyplot(plt)
 if __name__ == "__main__":
     main()
