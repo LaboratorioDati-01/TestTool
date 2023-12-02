@@ -145,18 +145,23 @@ def main():
     flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
     
     # # Esempio di corrispondenti valori di 'Price Flex'
-    price_flex_values = [613.62, 353.48, 267.915, 225.46, 200.32, 183.94, 172.55, 164.17, 157.81, 153.08]  # Sostituisci con i tuoi valori reali
+    price_flex_values_BAND10 = [613.62, 353.48, 267.915, 225.46, 200.32, 183.94, 172.55, 164.17, 157.81, 153.08]  # Sostituisci con i tuoi valori reali
+    # # Esempio di corrispondenti valori di 'Price Flex'
+    price_flex_values_BAND50 = [455.47, 273.37, 213.67, 184.16, 166.74, 155.45, 147.69, 142.02, 137.79, 134.71]  # Sostituisci con i tuoi valori reali
     
-     # Creazione del plot
+ # Creazione del plot
     plt.figure()
-    plt.plot(flex_values, price_flex_values, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='black')  # Marker sferico vuoto
-    plt.scatter([flex], [Price_Flex], color='red', s=50)  # Pallino rosso più grande
-    plt.title("Price Flex BAND10")
+    plt.plot(flex_values, price_flex_values_BAND10, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='blue', label='BAND10')  # Cerchi vuoti blu per BAND10
+    plt.plot(flex_values, price_flex_values_BAND50, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='orange', label='BAND50')  # Marker a croce verdi per BAND50
+    plt.scatter([flex], [Price_Flex], color='red', s=50)  # Pallino rosso più grande per il punto selezionato
+    plt.title("Price Flex Comparison")
     plt.xlabel("Flex")
     plt.ylabel("Price Flex")
     plt.grid(True)
+    plt.legend()  # Mostra la legenda
 
     # Visualizzazione del plot in Streamlit
     st.pyplot(plt)
+
 if __name__ == "__main__":
     main()
