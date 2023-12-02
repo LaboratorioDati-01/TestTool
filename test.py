@@ -108,7 +108,7 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
 
 # Interfaccia utente Streamlit
 def main():
-    st.title("Flex Price Calculator")
+    st.title("Flex price per hour calculator")
 
     # Creazione dei widget per l'input dell'utente
     # Creating widgets for user input
@@ -120,10 +120,10 @@ def main():
     Thermal = st.number_input("Current Thermal Energy Production (MW)", value=0)
     Max_Thermal = st.number_input("Maximum Possible Thermal Energy Production (MW)", value=800)
     Min_Thermal = st.number_input("Minimum Thermal Energy Production (MW)", value=0)
-    Price_Import = st.number_input("Imported Energy Price (per unit)", value=40)
-    Price_Wind = st.number_input("Wind Energy Price (per unit)", value=20)
-    Price_Thermal = st.number_input("Thermal Energy Price (per unit)", value=120)
-    flex = st.slider("Flexibility Factor (from 0.01 to 0.1)", 0.01, 0.1, 0.01)
+    Price_Import = st.number_input("Imported Energy Price ($)", value=40)
+    Price_Wind = st.number_input("Wind Energy Price ($)", value=20)
+    Price_Thermal = st.number_input("Thermal Energy Price ($)", value=120)
+    flex = st.slider("Flexibility Factor 0%-10% (from 0.01 to 0.1)", 0.01, 0.1, 0.01)
     Band = st.number_input("Flexibility Range (BAND)", value=10)
     Slope = st.number_input("Slope (SLOPE)", value=50)
 
@@ -137,9 +137,9 @@ def main():
     # Button to perform the calculation
     if st.button("Calculate Price Flex"):
         Price_Flex, c1, c2 = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
-        st.success(f"Calculated Price Flex: {Price_Flex}")
-        st.write(f"C1 (Non-flexible Demand): {c1}")
-        st.write(f"C2 (Flexible Demand): {c2}")
+        st.success(f"Calculated Price Flex: {Price_Flex} $/MW")
+        st.write(f"C1 (Non-flexible Demand): {c1}MW")
+        st.write(f"C2 (Flexible Demand): {c2}MW")
 
     # # Esempio di valori di 'flex' da 0.01 a 0.1
     flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
@@ -155,8 +155,8 @@ def main():
     plt.plot(flex_values, price_flex_values_BAND50, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='orange', label='BAND50')  # Marker a croce verdi per BAND50
     plt.scatter([flex], [Price_Flex], color='red', s=50)  # Pallino rosso più grande per il punto selezionato
     plt.title("Price Flex Comparison")
-    plt.xlabel("Flex")
-    plt.ylabel("Price Flex")
+    plt.xlabel("Flex %")
+    plt.ylabel("Price Flex $/MW")
     plt.grid(True)
     plt.legend()  # Mostra la legenda
 
