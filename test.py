@@ -91,37 +91,39 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
 
 # Interfaccia utente Streamlit
 def main():
-    st.title("Calcolatore di Price Flex")
+    st.title("Flex Price Calculator")
 
     # Creazione dei widget per l'input dell'utente
-    ToT_Demand = st.number_input("Domanda Totale di Energia", value=4700)
-    Wind = st.number_input("Produzione di Energia Eolica", value=1700)
-    Import = st.number_input("Quantità di Energia Importata", value=3000)
-    Max_Import = st.number_input("Massima Quantità di Energia che può essere Importata", value=3000)
-    Min_Import = st.number_input("Minima Quantità di Energia che può essere Importata", value=-1000)
-    Thermal = st.number_input("Produzione Attuale di Energia Termica", value=0)
-    Max_Thermal = st.number_input("Massima Produzione di Energia Termica Possibile", value=800)
-    Min_Thermal = st.number_input("Minima Produzione di Energia Termica", value=0)
-    Price_Import = st.number_input("Prezzo dell'Energia Importata", value=40)
-    Price_Wind = st.number_input("Prezzo dell'Energia Eolica", value=20)
-    Price_Thermal = st.number_input("Prezzo dell'Energia Termica", value=120)
-    flex = st.slider("Fattore di Flessibilità", 0.01, 0.1, 0.01)
-    Band = st.number_input("BAND", value=0)
-    Slope = st.number_input("SLOPE", value=50)
-    
+    # Creating widgets for user input
+    ToT_Demand = st.number_input("Total Demand of Energy (MW)", value=4700)
+    Wind = st.number_input("Wind Energy Production (MW)", value=1700)
+    Import = st.number_input("Imported Energy Quantity (MW)", value=3000)
+    Max_Import = st.number_input("Maximum Importable Energy Quantity (MW)", value=3000)
+    Min_Import = st.number_input("Minimum Importable Energy Quantity (MW)", value=-1000)
+    Thermal = st.number_input("Current Thermal Energy Production (MW)", value=0)
+    Max_Thermal = st.number_input("Maximum Possible Thermal Energy Production (MW)", value=800)
+    Min_Thermal = st.number_input("Minimum Thermal Energy Production (MW)", value=0)
+    Price_Import = st.number_input("Imported Energy Price (per unit)", value=40)
+    Price_Wind = st.number_input("Wind Energy Price (per unit)", value=20)
+    Price_Thermal = st.number_input("Thermal Energy Price (per unit)", value=120)
+    flex = st.slider("Flexibility Factor (from 0.01 to 0.1)", 0.01, 0.1, 0.01)
+    Band = st.number_input("Flexibility Range (BAND)", value=0)
+    Slope = st.number_input("Slope (SLOPE)", value=50)
+
 
     # Calcola la percentuale e visualizzala
     flex_percentuale = flex * 100
-    st.write(f"Fattore di Flessibilità: {flex_percentuale}%")
-    st.write(f"Intervallo di flessibilità(BAND): {Band}")
-    st.write(f"Pendenza, utilizzata per calcolare l'adattamento della domanda(SLOPE): {Slope}")
- 
-    # Bottone per eseguire il calcolo
-    if st.button("Calcola Price Flex"):
+    st.write(f"Flexibility Factor: {flex_percentuale}%")
+    st.write(f"Flexibility Range (BAND): {Band}")
+    st.write(f"Slope (used for demand adjustment): {Slope}")
+    
+    # Button to perform the calculation
+    if st.button("Calculate Price Flex"):
         price_flex, c1, c2 = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
-        st.success(f"Price Flex calcolato: {price_flex}")
-        st.write(f"C1 (Domanda non flessibile): {c1}")
-        st.write(f"C2 (Domanda flessibile): {c2}")
+        st.success(f"Calculated Price Flex: {price_flex}")
+        st.write(f"C1 (Non-flexible Demand): {c1}")
+        st.write(f"C2 (Flexible Demand): {c2}")
+
 
 if __name__ == "__main__":
     main()
