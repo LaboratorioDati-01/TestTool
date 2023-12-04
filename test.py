@@ -153,7 +153,7 @@ def main():
         st.success(f"Calculated Price Flex: {Price_Flex} $/MW")
         st.write(f"C1 (Non-flexible Demand): {C1}MW")
         st.write(f"C2 (Flexible Demand): {C2}MW")
-        st.write(f"Costo Domanda : {DRe2_media}$/MW")
+        st.write(f"Cost Demand : {DRe2_media}$/MW")
 
     # # Esempio di valori di 'flex' da 0.01 a 0.1
     flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
@@ -199,31 +199,31 @@ def main():
     num_groups = 10
     group_size = 100  # o min_length // num_groups per dividere equamente i punti che hai
     plt.close()
-    for group in range(num_groups):
-        plt.close()
-        plt.figure(figsize=(10, 6))
-        # Calcola gli indici per l'attuale gruppo di dati
-        start_idx = group * group_size
-        end_idx = start_idx + group_size
+    # for group in range(num_groups):
+    #     plt.close()
+    #     plt.figure(figsize=(10, 6))
+    #     # Calcola gli indici per l'attuale gruppo di dati
+    #     start_idx = group * group_size
+    #     end_idx = start_idx + group_size
 
-        # Estrai i dati per l'attuale gruppo
-        x_values_group = range(start_idx, end_idx)
-        Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
-        Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
-        DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
-        # Crea una curva separata per ciascun gruppo di dati
-        # plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
-        # plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
-        plt.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
-        # st.pyplot(plt)
+    #     # Estrai i dati per l'attuale gruppo
+    #     x_values_group = range(start_idx, end_idx)
+    #     Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
+    #     Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
+    #     DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
+    #     # Crea una curva separata per ciascun gruppo di dati
+    #     # plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
+    #     # plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
+    #     plt.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
+    #     # st.pyplot(plt)
     
-        plt.title(f"Demand and Production {group+1}")
-        plt.xlabel("Round")
-        plt.ylabel("Energy (MW)")
-        plt.grid(True)
-        plt.legend(loc='upper right')
-        plt.tight_layout()
-        st.pyplot(plt)
+    #     plt.title(f"Demand and Production {group+1}")
+    #     plt.xlabel("Round")
+    #     plt.ylabel("Energy (MW)")
+    #     plt.grid(True)
+    #     plt.legend(loc='upper right')
+    #     plt.tight_layout()
+    #     st.pyplot(plt)
 
 if __name__ == "__main__":
     main()
