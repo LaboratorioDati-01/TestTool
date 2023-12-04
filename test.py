@@ -164,9 +164,9 @@ def main():
     Tot_Production = [] #Production
     Tot_Demand2  = [] #Domanda
     for i in x_values:
-        Tot_Production2 = We[i]+Te[i]+ABS_Delta_Fe[i]+Ie[i]
+        Tot_Production2 = math.ceil(We[i]+Te[i]+ABS_Delta_Fe[i]+Ie[i])
         Tot_Production.append(Tot_Production2)
-        Tot_Demand2_calc = C1e[i]+C2
+        Tot_Demand2_calc = math.ceil(C1e[i]+C2)
         Tot_Demand2.append(Tot_Demand2_calc)
     
  # Grafico 1: Price Flex Comparison
@@ -184,15 +184,34 @@ def main():
 
     # Grafico 2: Domanda e Offerta
     plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
-    plt.plot(x_values, Tot_Demand2, linestyle='-', linewidth=2, color='blue', label='Demand')
-    plt.plot(x_values, Tot_Production, linestyle='-', linewidth=2, color='orange', label='Production')
-    plt.title("Demand e Production")
-    plt.xlabel("Round")
-    plt.ylabel("Energy (MW)")
-    plt.grid(True)
-    plt.legend(loc='upper right')  # Modifica la posizione della legenda
-    plt.tight_layout()  # Migliora il layout
-    st.pyplot(plt)
+      # Dividi i dati in 10 gruppi da 100 punti ciascuno
+    num_groups = 10
+    group_size = 100  # o min_length // num_groups per dividere equamente i punti che hai
+    plt.close()
+    for group in range(num_groups):
+        plt.close()
+        plt.figure(figsize=(10, 6))
+        # Calcola gli indici per l'attuale gruppo di dati
+        start_idx = group * group_size
+        end_idx = start_idx + group_size
+
+        # Estrai i dati per l'attuale gruppo
+        x_values_group = range(start_idx, end_idx)
+        Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
+        Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
+        
+        # Crea una curva separata per ciascun gruppo di dati
+        plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
+        plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
+        # st.pyplot(plt)
+    
+        plt.title("Demand and Production")
+        plt.xlabel("Round")
+        plt.ylabel("Energy (MW)")
+        plt.grid(True)
+        plt.legend(loc='upper right')
+        plt.tight_layout()
+        st.pyplot(plt)
 
 if __name__ == "__main__":
     main()
