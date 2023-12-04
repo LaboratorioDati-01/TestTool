@@ -205,7 +205,7 @@ def main():
         plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
         # st.pyplot(plt)
     
-        plt.title("Demand and Production")
+        plt.title(f"Demand and Production {group+1}")
         plt.xlabel("Round")
         plt.ylabel("Energy (MW)")
         plt.grid(True)
