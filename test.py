@@ -104,12 +104,16 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     Price_Flex = (DRe_s - DIe_s - DTe_s) / ABS_Delta_Fe_s
     Price_Flex = round(Price_Flex, 2)
     # Alla fine, restituisci il valore calcolato di Price_Flex
-    return Price_Flex,C1,C2
-
+    return Price_Flex,C1,C2,C1e,We,Te,ABS_Delta_Fe,Ie
 # Interfaccia utente Streamlit
 def main():
     st.title("Flex price per hour calculator")
-
+    Price_Flex = 0
+    We = []
+    Te = []
+    ABS_Delta_Fe = []
+    Ie = []
+    C1e = []
     # Creazione dei widget per l'input dell'utente
     # Creating widgets for user input
     ToT_Demand = st.number_input("Total Demand of Energy (MW)", value=4700)
@@ -136,10 +140,10 @@ def main():
     
     # Button to perform the calculation
     if st.button("Calculate Price Flex"):
-        Price_Flex, c1, c2 = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
+        Price_Flex, C1, C2, C1e, We, Te, ABS_Delta_Fe, Ie = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
         st.success(f"Calculated Price Flex: {Price_Flex} $/MW")
-        st.write(f"C1 (Non-flexible Demand): {c1}MW")
-        st.write(f"C2 (Flexible Demand): {c2}MW")
+        st.write(f"C1 (Non-flexible Demand): {C1}MW")
+        st.write(f"C2 (Flexible Demand): {C2}MW")
 
     # # Esempio di valori di 'flex' da 0.01 a 0.1
     flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
@@ -149,18 +153,45 @@ def main():
     # # Esempio di corrispondenti valori di 'Price Flex'
     price_flex_values_BAND50 = [455.47, 273.37, 213.67, 184.16, 166.74, 155.45, 147.69, 142.02, 137.79, 134.71]  # Sostituisci con i tuoi valori reali
     
- # Creazione del plot
-    plt.figure()
-    plt.plot(flex_values, price_flex_values_BAND10, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='blue', label='BAND10')  # Cerchi vuoti blu per BAND10
-    plt.plot(flex_values, price_flex_values_BAND50, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='orange', label='BAND50')  # Marker a croce verdi per BAND50
-    plt.scatter([flex], [Price_Flex], color='red', s=50)  # Pallino rosso più grande per il punto selezionato
+ # Creazione del plot 
+    # Creazione di un indice numerico per l'asse x
+    x_values = list(range(1000))  # 1000 punti da 0 a 999
+    # Check if all lists have at least 1000 items
+    min_length = min(len(We), len(Te), len(ABS_Delta_Fe), len(Ie), len(C1e))
+    if min_length < 1000:
+        raise ValueError("Press Calculate Price Flex")
+        
+    Tot_Production = [] #Production
+    Tot_Demand2  = [] #Domanda
+    for i in x_values:
+        Tot_Production2 = We[i]+Te[i]+ABS_Delta_Fe[i]+Ie[i]
+        Tot_Production.append(Tot_Production2)
+        Tot_Demand2_calc = C1e[i]+C2
+        Tot_Demand2.append(Tot_Demand2_calc)
+    
+ # Grafico 1: Price Flex Comparison
+    plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
+    plt.plot(flex_values, price_flex_values_BAND10, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='blue', label='BAND10')
+    plt.plot(flex_values, price_flex_values_BAND50, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='orange', label='BAND50')
+    plt.scatter([flex], [Price_Flex], color='red', s=50)
     plt.title("Price Flex Comparison")
     plt.xlabel("Flex %")
     plt.ylabel("Price Flex $/MW")
     plt.grid(True)
-    plt.legend()  # Mostra la legenda
+    plt.legend(loc='upper right')  # Modifica la posizione della legenda
+    plt.tight_layout()  # Migliora il layout
+    st.pyplot(plt)
 
-    # Visualizzazione del plot in Streamlit
+    # Grafico 2: Domanda e Offerta
+    plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
+    plt.plot(x_values, Tot_Demand2, linestyle='-', color='blue', label='Domanda')
+    plt.plot(x_values, Tot_Production, linestyle='-', color='orange', label='Offerta')
+    plt.title("Domanda e Offerta")
+    plt.xlabel("Indice")
+    plt.ylabel("Quantità (MW)")
+    plt.grid(True)
+    plt.legend(loc='upper right')  # Modifica la posizione della legenda
+    plt.tight_layout()  # Migliora il layout
     st.pyplot(plt)
 
 if __name__ == "__main__":
