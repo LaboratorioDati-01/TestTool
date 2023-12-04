@@ -153,7 +153,7 @@ def main():
     # # Esempio di corrispondenti valori di 'Price Flex'
     price_flex_values_BAND50 = [455.47, 273.37, 213.67, 184.16, 166.74, 155.45, 147.69, 142.02, 137.79, 134.71]  # Sostituisci con i tuoi valori reali
     
- # Creazione del plot 
+ # Creation of plot 
     # Creazione di un indice numerico per l'asse x
     x_values = list(range(1000))  # 1000 punti da 0 a 999
     # Check if all lists have at least 1000 items
