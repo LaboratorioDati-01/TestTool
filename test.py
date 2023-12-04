@@ -184,11 +184,11 @@ def main():
 
     # Grafico 2: Domanda e Offerta
     plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
-    plt.plot(x_values, Tot_Demand2, linestyle='-', color='blue', label='Domanda')
-    plt.plot(x_values, Tot_Production, linestyle='-', color='orange', label='Offerta')
-    plt.title("Domanda e Offerta")
-    plt.xlabel("Indice")
-    plt.ylabel("Quantità (MW)")
+    plt.plot(x_values, Tot_Demand2, linestyle='-', linewidth=2, color='blue', label='Demand')
+    plt.plot(x_values, Tot_Production, linestyle='-', linewidth=2, color='orange', label='Production')
+    plt.title("Demand e Production")
+    plt.xlabel("Round")
+    plt.ylabel("Energy (MW)")
     plt.grid(True)
     plt.legend(loc='upper right')  # Modifica la posizione della legenda
     plt.tight_layout()  # Migliora il layout
