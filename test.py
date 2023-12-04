@@ -93,7 +93,15 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     DRe = [max(abs(C1 - C1e[k]) - Band, 0) * Slope for k in range(1000)]
     DTe = [Te[k] * Price_Thermal for k in range(1000)]
     DIe = [(Ie[k] - Import) * Price_Import for k in range(1000)]
-    
+    DRe2 = []
+    for i in range(1000):
+    # Check if the index i is within the bounds of both lists
+        if i < len(DRe) and i < len(C1e):
+            DRe21 = (((DRe[i]) *40)+(C1*40))/C1e[i]
+            DRe2.append(DRe21)
+        else:
+        # Handle the case where i is out of bounds for one of the lists
+            break  # or continue, depending on your needs
     # Somma dei valori calcolati.
     DRe_s = sum(DRe)
     DTe_s = sum(DTe)
@@ -103,8 +111,9 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     # Calcolo del prezzo della flessibilità.
     Price_Flex = (DRe_s - DIe_s - DTe_s) / ABS_Delta_Fe_s
     Price_Flex = round(Price_Flex, 2)
+    DRe2_media = sum(DRe2)/len(DRe2)
     # Alla fine, restituisci il valore calcolato di Price_Flex
-    return Price_Flex,C1,C2,C1e,We,Te,ABS_Delta_Fe,Ie
+    return Price_Flex,C1,C2,C1e,We,Te,ABS_Delta_Fe,Ie , DRe2_media, DRe2
 # Interfaccia utente Streamlit
 def main():
     st.title("Flex price per hour calculator")
@@ -140,10 +149,11 @@ def main():
     
     # Button to perform the calculation
     if st.button("Calculate Price Flex"):
-        Price_Flex, C1, C2, C1e, We, Te, ABS_Delta_Fe, Ie = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
+        Price_Flex, C1, C2, C1e, We, Te, ABS_Delta_Fe, Ie, DRe2_media, DRe2 = calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal, Max_Thermal, Min_Thermal, flex, Band, Slope, Price_Import, Price_Wind, Price_Thermal)
         st.success(f"Calculated Price Flex: {Price_Flex} $/MW")
         st.write(f"C1 (Non-flexible Demand): {C1}MW")
         st.write(f"C2 (Flexible Demand): {C2}MW")
+        st.write(f"Costo Domanda : {DRe2_media}$/MW")
 
     # # Esempio di valori di 'flex' da 0.01 a 0.1
     flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
@@ -173,6 +183,7 @@ def main():
     plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
     plt.plot(flex_values, price_flex_values_BAND10, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='blue', label='BAND10')
     plt.plot(flex_values, price_flex_values_BAND50, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='orange', label='BAND50')
+    
     plt.scatter([flex], [Price_Flex], color='red', s=50)
     plt.title("Price Flex Comparison")
     plt.xlabel("Flex %")
@@ -199,10 +210,11 @@ def main():
         x_values_group = range(start_idx, end_idx)
         Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
         Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
-        
+        DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
         # Crea una curva separata per ciascun gruppo di dati
         plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
         plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
+        plt.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
         # st.pyplot(plt)
     
         plt.title(f"Demand and Production {group+1}")
