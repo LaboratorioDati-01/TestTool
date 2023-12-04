@@ -212,8 +212,8 @@ def main():
         Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
         DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
         # Crea una curva separata per ciascun gruppo di dati
-        plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
-        plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
+        # plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
+        # plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
         plt.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
         # st.pyplot(plt)
     
