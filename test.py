@@ -18,18 +18,18 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     df = pd.read_excel(file_path, sheet_name=1)  # '1' sta per il secondo foglio
     # Trasforma l'intero DataFrame in un array NumPy e poi in una lista
     vettore_df = df.values.flatten().tolist()
-    ToT_Demand = 4700  # Domanda totale di energia.
-    Wind = 1700  # Produzione di energia eolica.
+    # ToT_Demand = 4700  # Domanda totale di energia.
+    # Wind = 1700  # Produzione di energia eolica.
     
-    # Parametri per l'importazione di energia.
-    Import = 3000  # Quantità di energia importata.
-    Max_Import = 3000  # Massima quantità di energia che può essere importata.
-    Min_Import = -1000  # Minima quantità di energia che può essere importata (negativo indica esportazione).
+    # # Parametri per l'importazione di energia.
+    # Import = 3000  # Quantità di energia importata.
+    # Max_Import = 3000  # Massima quantità di energia che può essere importata.
+    # Min_Import = -1000  # Minima quantità di energia che può essere importata (negativo indica esportazione).
     
-    # Parametri per la produzione di energia termica.
-    Thermal = 0  # Produzione attuale di energia termica.
-    Max_Thermal = 800  # Massima produzione di energia termica possibile.
-    Min_Thermal = 0  # Minima produzione di energia termica (non può essere negativa).
+    # # Parametri per la produzione di energia termica.
+    # Thermal = 0  # Produzione attuale di energia termica.
+    # Max_Thermal = 800  # Massima produzione di energia termica possibile.
+    # Min_Thermal = 0  # Minima produzione di energia termica (non può essere negativa).
     
     # Parametri di flessibilità della domanda.
     # flex = 0.1  # Fattore di flessibilità, tra 0.1 e 1.
@@ -42,10 +42,10 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     Min_Flex_Demand = -C2 * 0.5  # Minima domanda flessibile.
     Max_Flex_Demand = C2 * 0.2  # Massima domanda flessibile.
     
-    # Prezzi dell'energia.
-    Price_Import = 40  # Prezzo dell'energia importata.
-    Price_Wind = 20  # Prezzo dell'energia eolica.
-    Price_Thermal = 120  # Prezzo dell'energia termica.
+    # # Prezzi dell'energia.
+    # Price_Import = 40  # Prezzo dell'energia importata.
+    # Price_Wind = 20  # Prezzo dell'energia eolica.
+    # Price_Thermal = 120  # Prezzo dell'energia termica.
     
     # Funzioni per generare variazioni percentuali casuali.
     def genera_variazione_demand():
@@ -98,6 +98,7 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     # Check if the index i is within the bounds of both lists
         if i < len(DRe) and i < len(C1e):
             DRe21 = (((DRe[i]) *40)+(C1*40))/C1e[i]
+            # DRe21 = ((DRe[i]) *(We[i]*Price_Wind+Ie[i]*Price_Import+Te[i]*Price_Thermal/C1+C2)+(C1*(We[i]*Price_Wind+Ie[i]*Price_Import+Te[i]*Price_Thermal/C1+C2)))/C1e[i]
             DRe2.append(DRe21)
         else:
         # Handle the case where i is out of bounds for one of the lists
