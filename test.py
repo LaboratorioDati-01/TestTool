@@ -220,7 +220,7 @@ def main():
     
     # Set the title and labels
     plt.title("Cumulative Distribution Function Cost of Client")
-    plt.xlabel("Customer’s Cost [$/MWh]")
+    plt.xlabel("Cost to the customer [$/MWh]")
     plt.ylabel("CDF Value (Probability)")
     
     plt.grid(True)
