@@ -3,6 +3,7 @@ import pandas as pd
 import random
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Imposta un seed specifico
 random.seed(42)  # Puoi usare qualsiasi numero come seed
@@ -159,19 +160,19 @@ def main():
     # # Esempio di valori di 'flex' da 0.01 a 0.1
     flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
     
+    
     # # Esempio di corrispondenti valori di 'Price Flex'
     price_flex_values_BAND10 = [613.62, 353.48, 267.915, 225.46, 200.32, 183.94, 172.55, 164.17, 157.81, 153.08]  # Sostituisci con i tuoi valori reali
     # # Esempio di corrispondenti valori di 'Price Flex'
     price_flex_values_BAND50 = [455.47, 273.37, 213.67, 184.16, 166.74, 155.45, 147.69, 142.02, 137.79, 134.71]  # Sostituisci con i tuoi valori reali
     
- # Creation of plot 
     # Creazione di un indice numerico per l'asse x
     x_values = list(range(1000))  # 1000 punti da 0 a 999
     # Check if all lists have at least 1000 items
     min_length = min(len(We), len(Te), len(ABS_Delta_Fe), len(Ie), len(C1e))
     if min_length < 1000:
         raise ValueError("Press Calculate Price Flex")
-        
+    
     Tot_Production = [] #Production
     Tot_Demand2  = [] #Domanda
     for i in x_values:
@@ -180,11 +181,12 @@ def main():
         Tot_Demand2_calc = math.ceil(C1e[i]+C2)
         Tot_Demand2.append(Tot_Demand2_calc)
     
+    
  # Grafico 1: Price Flex Comparison
     plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
     plt.plot(flex_values, price_flex_values_BAND10, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='blue', label='BAND10')
+    # plt.plot(flex_values, CurvefitBand10, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='green', label='BAND10-FIT')
     plt.plot(flex_values, price_flex_values_BAND50, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='orange', label='BAND50')
-    
     plt.scatter([flex], [Price_Flex], color='red', s=50)
     plt.title("Price Flex Comparison")
     plt.xlabel("Flex %")
@@ -193,9 +195,7 @@ def main():
     plt.legend(loc='upper right')  # Modifica la posizione della legenda
     plt.tight_layout()  # Migliora il layout
     st.pyplot(plt)
-
-    # Grafico 2: Domanda e Offerta
-    plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
+    
       # Dividi i dati in 10 gruppi da 100 punti ciascuno
     num_groups = 10
     group_size = 100  # o min_length // num_groups per dividere equamente i punti che hai
@@ -203,6 +203,50 @@ def main():
     
     # Calcola il numero totale di righe necessarie
     num_rows = math.ceil(num_groups / num_cols)
+    plt.close()
+    
+    plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
+        # Sort the data in ascending order
+    data_sorted = np.sort(DRe2)
+    
+    # Calculate the cumulative probabilities, from 0 to 1
+    cdf_values = np.arange(len(DRe2)) / float(len(DRe2) - 1)
+    
+    # Create the CDF plot
+    plt.plot(data_sorted, cdf_values,marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='blue')
+    
+    # Set the title and labels
+    plt.title("Cumulative Distribution Function Cost")
+    plt.xlabel("Data Points")
+    plt.ylabel("CDF Value (Probability)")
+    
+    plt.grid(True)
+    st.pyplot(plt)
+    plt.close()
+    
+    plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
+        # Sort the data in ascending order
+    Balance = []
+    for i in x_values:
+        Balance2 = Tot_Demand2[i] - Tot_Production[i]
+        Balance.append(Balance2)    
+        
+        
+    data_sorted = np.sort(Balance)
+    
+    # Calculate the cumulative probabilities, from 0 to 1
+    cdf_values = np.arange(len(Balance)) / float(len(Balance) - 1)
+    
+    # Create the CDF plot
+    plt.plot(data_sorted, cdf_values,marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='orange')
+    
+    # Set the title and labels
+    plt.title("Cumulative Distribution Function Balance")
+    plt.xlabel("Data Points")
+    plt.ylabel("CDF Value (Probability)")
+    
+    plt.grid(True)
+    st.pyplot(plt)
     plt.close()
     # for group in range(num_groups):
     #     plt.close()
