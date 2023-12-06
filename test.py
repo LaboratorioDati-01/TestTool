@@ -166,6 +166,26 @@ def main():
         Tot_Demand2_calc = math.ceil(C1e[i]+C2)
         Tot_Demand2.append(Tot_Demand2_calc)
     
+    # Dati forniti
+    a = 1073
+    b = -107.1
+    c = 259.1
+    d = -5.558
+    A = DRe2_media
+    B = -6.499531908721845
+    
+    # Definizione delle funzioni f(x) e g(x)
+    def f(x):
+        return a * np.exp(b * x) + c * np.exp(d * x)
+    
+    def g(x):
+        return A * np.exp(B * x)
+    
+    # Valori di x per il plot
+    flex_values1 = np.linspace(0.00, 0.1, 100)
+    # Calcolo dei valori di y per f(x) e g(x)
+    f_values = f(flex_values1)
+    g_values = g(flex_values1)
 # Graph 1: Price Flex Comparison
     plt.figure(figsize=(10, 6))  # Increase the size of the graph
     plt.plot(flex_values, price_flex_values_BAND10, marker='o', linestyle='-', markersize=7, markerfacecolor='none', markeredgecolor='blue', label='BAND10')
@@ -179,6 +199,49 @@ def main():
     plt.tight_layout() # Improve layout
     st.pyplot(plt)
     plt.close()
+    # st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
+# Graph 1.2: Price Offert Comparison
+    plt.figure(figsize=(10, 6))
+    plt.plot(flex_values1, f_values, label='f(x)')
+    plt.plot(flex_values1, g_values, label='g(x)', linestyle='--')
+    plt.scatter([0.06], [f(0.06)], color='red')  # Punto di tangenza
+    plt.title('Equilibrium Point')
+    plt.xlabel('Flex %')
+    plt.ylabel('Price Flex $/MW')
+    plt.legend(loc='upper right')
+    plt.grid(True)
+    st.pyplot(plt)
+    plt.close()
+    # st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
+# Graph 1.3: Price Offert Comparison
+    c = 259.1
+    d = -5.558
+    # Definizione di f(x)
+    def f(x):
+        return a * np.exp(b * x) + c * np.exp(d * x)
+
+    x1, y1 = 0.00, 0.00
+    x2, y2 = 0.02, 353.48
+    m = (y2 - y1) / (x2 - x1)
+    # Equazione della retta
+    def retta(x):
+        return m * (x - x1) + y1
+    
+    x_values = np.linspace(0, 0.1, 100)
+    f_values = f(x_values)
+    retta_values = retta(x_values)
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_values, f_values, label='f(x)')
+    plt.plot(x_values, retta_values, label='y(x)', linestyle='--')
+    plt.scatter([x2], [y2], color='red')  # Punti della retta
+    plt.title('Theoretical Linear Curve of  Demand')
+    plt.xlabel('Flex %')
+    plt.ylabel('Price Flex $/MW')
+    plt.legend(loc='upper right')
+    plt.grid(True)
+    st.pyplot(plt)
+    plt.close()
+    st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
 # Graph 2: Cumulative Distribution Function Cost of Client    
     plt.figure(figsize=(10, 6))  
     # Sort the data in ascending order
@@ -209,7 +272,7 @@ def main():
     for i, fraction in enumerate(fractions):
         plt.text(i, fraction, f'{counts[i]}/{total_samples}', ha='center', va='bottom')
     plt.title('Distribution of Cost Demand Mean')
-    plt.xlabel('Cost to the customer > Demand Mean')
+    plt.xlabel('Cost to the customer > Cost Demand Mean')
     plt.ylabel('Fraction of Samples(Probability)')  
     plt.grid(True)
     st.pyplot(plt)
