@@ -4,7 +4,7 @@ import random
 import math
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.optimize import curve_fit
+# from scipy.optimize import curve_fit
 # Setting a fixed seed for reproducibility of random operations
 random.seed(42)  # Usare un seed fisso è una buona pratica per risultati riproducibili
 # Main function to calculate the flexibility price
