@@ -4,7 +4,7 @@ import random
 import math
 import matplotlib.pyplot as plt
 import numpy as np
-# from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit
 # Setting a fixed seed for reproducibility of random operations
 random.seed(42)  # Usare un seed fisso è una buona pratica per risultati riproducibili
 # Main function to calculate the flexibility price
@@ -70,7 +70,7 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     Te = [min(max(C1e[k] + C2 + Delta_Fe[k] - Ie[k] - We[k], Min_Thermal), Max_Thermal) for k in range(1000)]
     
     # Calculating energy balance
-    Be = [abs(C1e[k] + Delta_Fe[k] + C2 - We[k] - Ie[k] - Te[k]) for k in range(1000)]
+    # Be = [abs(C1e[k] + Delta_Fe[k] + C2 - We[k] - Ie[k] - Te[k]) for k in range(1000)]
     
     # Calculating various costs or values related to demand, thermal production, and importation
     DRe = [max(abs(C1 - C1e[k]) - Band, 0) * Slope for k in range(1000)]
@@ -241,7 +241,44 @@ def main():
     plt.grid(True)
     st.pyplot(plt)
     plt.close()
-    st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
+    # st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
+# Graph 1.4: Price Offert Comparison
+    # Funzione sigmoide
+    # def sigmoid(x, L, k, x0):
+    #     return L / (1 + np.exp(-k * (x - x0)))
+
+    # # Punti dati
+    # x_data = np.array([0, 0.05])
+    # y_data = np.array([0, 201])
+    
+    # # Valore massimo L (dato)
+    # L = 260
+    
+    # # Utilizzo di curve_fit per trovare i parametri ottimali k e x0
+    # params, _ = curve_fit(lambda x, k, x0: sigmoid(x, L, k, x0), x_data, y_data, p0=[1, 0])
+    
+    # # Estrazione dei parametri k e x0
+    # k, x0 = params
+    
+    # # Valori di x per il plot
+    # x_values = np.linspace(0, 0.1, 100)
+    
+    # # Calcolo dei valori di y per la sigmoide
+    # sigmoid_values = sigmoid(x_values, L, k, x0)
+    
+    # # Creazione del plot
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(x_values, sigmoid_values, label='Sigmoide')
+    # plt.scatter(x_data, y_data, color='red')  # Punti dati
+    # plt.title('Plot della Sigmoide')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.ylim(0, 270)  # Limita l'asse y per una migliore visualizzazione
+    # plt.legend()
+    # plt.grid(True)
+    # st.pyplot(plt)
+    # plt.close()
+    # st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
 # Graph 2: Cumulative Distribution Function Cost of Client    
     plt.figure(figsize=(10, 6))  
     # Sort the data in ascending order
