@@ -219,7 +219,7 @@ def main():
     
     # Set the title and labels
     plt.title("Cumulative Distribution Function Cost")
-    plt.xlabel("Data Points")
+    plt.xlabel("$/MWh")
     plt.ylabel("CDF Value (Probability)")
     
     plt.grid(True)
@@ -244,7 +244,7 @@ def main():
     
     # Set the title and labels
     plt.title("Cumulative Distribution Function Balance")
-    plt.xlabel("Data Points")
+    plt.xlabel("MWh")
     plt.ylabel("CDF Value (Probability)")
     
     plt.grid(True)
