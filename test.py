@@ -4,7 +4,7 @@ import random
 import math
 import matplotlib.pyplot as plt
 import numpy as np
-
+from scipy.optimize import curve_fit
 # Setting a fixed seed for reproducibility of random operations
 random.seed(42)  # Usare un seed fisso è una buona pratica per risultati riproducibili
 # Main function to calculate the flexibility price
@@ -227,12 +227,12 @@ def main():
     def retta(x):
         return m * (x - x1) + y1
     
-    x_values = np.linspace(0, 0.1, 100)
-    f_values = f(x_values)
-    retta_values = retta(x_values)
+    x_values1 = np.linspace(0, 0.1, 100)
+    f_values = f(x_values1)
+    retta_values = retta(x_values1)
     plt.figure(figsize=(10, 6))
-    plt.plot(x_values, f_values, label='f(x)')
-    plt.plot(x_values, retta_values, label='y(x)', linestyle='--')
+    plt.plot(x_values1, f_values, label='f(x)')
+    plt.plot(x_values1, retta_values, label='y(x)', linestyle='--')
     plt.scatter([x2], [y2], color='red')  # Punti della retta
     plt.title('Theoretical Linear Curve of  Demand')
     plt.xlabel('Flex %')
