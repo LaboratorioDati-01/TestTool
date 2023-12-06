@@ -113,7 +113,8 @@ def calcola_price_flex(ToT_Demand, Wind, Import, Max_Import, Min_Import, Thermal
     # Calcolo del prezzo della flessibilità.
     Price_Flex = (DRe_s - DIe_s - DTe_s) / ABS_Delta_Fe_s
     Price_Flex = round(Price_Flex, 2)
-    DRe2_media = sum(DRe2)/len(DRe2)
+    DRe2_media = round(sum(DRe2)/len(DRe2))
+    C2 = round(C2)
     # Alla fine, restituisci il valore calcolato di Price_Flex
     return Price_Flex,C1,C2,C1e,We,Te,ABS_Delta_Fe,Ie , DRe2_media, DRe2
 # Interfaccia utente Streamlit
