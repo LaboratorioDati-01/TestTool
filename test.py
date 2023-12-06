@@ -157,7 +157,7 @@ def main():
         st.success(f"Calculated Price Flex: {Price_Flex} $/MW")
         st.write(f"C1 (Non-flexible Demand): {C1}MW")
         st.write(f"C2 (Flexible Demand): {C2}MW")
-        st.write(f"Cost Demand : {DRe2_media}$/MW")
+        st.write(f"Cost Demand Mean : {DRe2_media}$/MW")
 
     # # Esempio di valori di 'flex' da 0.01 a 0.1
     flex_values = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
@@ -221,20 +221,50 @@ def main():
     # Set the title and labels
     plt.title("Cumulative Distribution Function Cost of Client")
     plt.xlabel("Cost to the customer [$/MWh]")
-    plt.ylabel("CDF Value (Probability)")
+    plt.ylabel("CDF Cost of Client Value (Probability)")
     
     plt.grid(True)
     st.pyplot(plt)
     plt.close()
+    # Convert DRe2 to a NumPy array
+    DRe2_array = np.array(DRe2)
+    # Separate the data based on the condition
+    num_samples_less_than_mean = np.sum(DRe2_array < DRe2_media)
+    num_samples_greater_than_mean = np.sum(DRe2_array >= DRe2_media)
     
+    # Calcola il numero totale dei campioni
+    total_samples = len(DRe2_array)
+    
+    # Crea i dati per il grafico a barre
+    categories = ['Lower than Average', 'Higher than Average']
+    counts = [num_samples_less_than_mean, num_samples_greater_than_mean]
+    fractions = [count / total_samples for count in counts]
+    
+    # Crea il grafico a barre
+    plt.figure(figsize=(10, 6))
+    plt.bar(categories, fractions)
+    
+    # Aggiungi le etichette con i conteggi effettivi
+    for i, fraction in enumerate(fractions):
+        plt.text(i, fraction, f'{counts[i]}/{total_samples}', ha='center', va='bottom')
+    
+    # Aggiungi etichette e titolo
+    plt.title('Distribution of Cost Demand Mean ')
+    plt.xlabel('Cost to the customer [$/MWh]')
+    plt.ylabel('Fraction of Samples(Probability)')  
+
+    plt.grid(True)
+    st.pyplot(plt)
+    plt.close()
     plt.figure(figsize=(10, 6))  # Aumenta le dimensioni del grafico
         # Sort the data in ascending order
     Balance = []
     for i in x_values:
         Balance2 = Tot_Demand2[i] - Tot_Production[i]
         Balance.append(Balance2)    
-        
-        
+     
+    Balance_array = np.array(Balance)
+    
     data_sorted = np.sort(Balance)
     
     # Calculate the cumulative probabilities, from 0 to 1
@@ -246,108 +276,138 @@ def main():
     # Set the title and labels
     plt.title("Cumulative Distribution Function Balance")
     plt.xlabel("MWh")
-    plt.ylabel("CDF Value (Probability)")
+    plt.ylabel("CDF Balance Value (Probability)")
     
     plt.grid(True)
     st.pyplot(plt)
     plt.close()
-    # for group in range(num_groups):
-    #     plt.close()
-    #     plt.figure(figsize=(10, 6))
-    #     # Calcola gli indici per l'attuale gruppo di dati
-    #     start_idx = group * group_size
-    #     end_idx = start_idx + group_size
-
-    #     # Estrai i dati per l'attuale gruppo
-    #     x_values_group = range(start_idx, end_idx)
-    #     Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
-    #     Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
-    #     DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
-    #     # Crea una curva separata per ciascun gruppo di dati
-    #     # plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
-    #     # plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
-    #     plt.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
-    #     # st.pyplot(plt)
     
-    #     plt.title(f"Cost Demand {group+1}")
-    #     plt.xlabel("Round")
-    #     plt.ylabel("Price ($/MW)")
-    #     plt.grid(True)
-    #     plt.legend(loc='upper right')
-    #     plt.tight_layout()
-    #     st.pyplot(plt)
-    #     # Numero di colonne per i subplot
+    # Separate the data into greater than zero and equal to zero
+    num_samples_greater_than_zero = np.sum(Balance_array > 0)
+    num_samples_equal_to_zero = np.sum(Balance_array == 0)
     
-    # # Crea la figura e gli assi per i subplot
-    # fig, axs = plt.subplots(num_rows, num_cols, figsize=(20, 6 * num_rows))
+    # Calcola il numero totale dei campioni
+    total_samples = len(Balance_array)
     
-    # for group in range(num_groups):
-    #     # Calcola gli indici per la riga e la colonna correnti
-    #     row = group // num_cols
-    #     col = group % num_cols
+    # Crea i dati per il grafico a barre
+    categories = ['Equal to Zero','Greater than Zero']
+    counts = [num_samples_equal_to_zero, num_samples_greater_than_zero]
+    fractions = [count / total_samples for count in counts]
     
-    #     # Ottieni l'asse corrente
-    #     ax = axs[row, col]
+    # Crea il grafico a barre
+    plt.figure(figsize=(10, 6))
+    plt.bar(categories, fractions, color='orange')
     
-    #     # Calcola gli indici per l'attuale gruppo di dati
-    #     start_idx = group * group_size
-    #     end_idx = start_idx + group_size
-    #     x_values_group = range(start_idx, end_idx)
-        
-    #     # Estrai e calcola i dati
-    #     # (qui vanno le tue operazioni sui dati)
-    #     # Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
-    #     # Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
-    #     DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
-    #     # Crea il grafico nel subplot corrispondente
-    #     # ax.plot(x_values_group, Tot_Demand2_group, linewidth=2, label=f'Demand Group {group+1}')
-    #     # ax.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
-    #     ax.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
+    # Aggiungi le etichette con i conteggi effettivi
+    for i, fraction in enumerate(fractions):
+        plt.text(i, fraction, f'{counts[i]}/{total_samples}', ha='center', va='bottom')
     
-    #     # Imposta titolo, etichette e altre opzioni per l'asse corrente
-    #     ax.set_title(f"DCost Demand {group+1}")
-    #     ax.set_xlabel("Round")
-    #     ax.set_ylabel("Energy (MW)")
-    #     ax.grid(True)
-    #     ax.legend(loc='upper right')
-        
-    # plt.tight_layout()
-    # st.pyplot(plt)    
-
-    #  # Crea la figura e gli assi per i subplot
-    # fig, axs = plt.subplots(num_rows, num_cols, figsize=(20, 6 * num_rows))
-    # for group in range(num_groups):
-    #     # Calcola gli indici per la riga e la colonna correnti
-    #     row = group // num_cols
-    #     col = group % num_cols
+    # Aggiungi etichette e titolo
+    plt.title('Distribution of Balance Values')
+    plt.xlabel('Balance Categories')
+    plt.ylabel('Fraction of Samples')
+    plt.grid(True)
+    st.pyplot(plt)
+    plt.close()
     
-    #     # Ottieni l'asse corrente
-    #     ax = axs[row, col]
-    
-    #     # Calcola gli indici per l'attuale gruppo di dati
-    #     start_idx = group * group_size
-    #     end_idx = start_idx + group_size
-    #     x_values_group = range(start_idx, end_idx)
-        
-    #     # Estrai e calcola i dati
-    #     # (qui vanno le tue operazioni sui dati)
-    #     Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
-    #     Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
-    #     # DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
-    #     # Crea il grafico nel subplot corrispondente
-    #     ax.plot(x_values_group, Tot_Demand2_group, linewidth=2, label=f'Demand Group {group+1}')
-    #     ax.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
-    #     # ax.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
-    
-    #     # Imposta titolo, etichette e altre opzioni per l'asse corrente
-    #     ax.set_title(f"Demand and Production {group+1}")
-    #     ax.set_xlabel("Round")
-    #     ax.set_ylabel("Energy (MW)")
-    #     ax.grid(True)
-    #     ax.legend(loc='upper right')
-        
-    # plt.tight_layout()
-    # st.pyplot(plt)
-
 if __name__ == "__main__":
     main()
+
+
+# for group in range(num_groups):
+#     plt.close()
+#     plt.figure(figsize=(10, 6))
+#     # Calcola gli indici per l'attuale gruppo di dati
+#     start_idx = group * group_size
+#     end_idx = start_idx + group_size
+
+#     # Estrai i dati per l'attuale gruppo
+#     x_values_group = range(start_idx, end_idx)
+#     Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
+#     Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
+#     DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
+#     # Crea una curva separata per ciascun gruppo di dati
+#     # plt.plot(x_values_group, Tot_Demand2_group,  linewidth=2, label=f'Demand Group {group+1}')
+#     # plt.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
+#     plt.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
+#     # st.pyplot(plt)
+
+#     plt.title(f"Cost Demand {group+1}")
+#     plt.xlabel("Round")
+#     plt.ylabel("Price ($/MW)")
+#     plt.grid(True)
+#     plt.legend(loc='upper right')
+#     plt.tight_layout()
+#     st.pyplot(plt)
+#     # Numero di colonne per i subplot
+
+# # Crea la figura e gli assi per i subplot
+# fig, axs = plt.subplots(num_rows, num_cols, figsize=(20, 6 * num_rows))
+
+# for group in range(num_groups):
+#     # Calcola gli indici per la riga e la colonna correnti
+#     row = group // num_cols
+#     col = group % num_cols
+
+#     # Ottieni l'asse corrente
+#     ax = axs[row, col]
+
+#     # Calcola gli indici per l'attuale gruppo di dati
+#     start_idx = group * group_size
+#     end_idx = start_idx + group_size
+#     x_values_group = range(start_idx, end_idx)
+    
+#     # Estrai e calcola i dati
+#     # (qui vanno le tue operazioni sui dati)
+#     # Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
+#     # Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
+#     DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
+#     # Crea il grafico nel subplot corrispondente
+#     # ax.plot(x_values_group, Tot_Demand2_group, linewidth=2, label=f'Demand Group {group+1}')
+#     # ax.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
+#     ax.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
+
+#     # Imposta titolo, etichette e altre opzioni per l'asse corrente
+#     ax.set_title(f"DCost Demand {group+1}")
+#     ax.set_xlabel("Round")
+#     ax.set_ylabel("Energy (MW)")
+#     ax.grid(True)
+#     ax.legend(loc='upper right')
+    
+# plt.tight_layout()
+# st.pyplot(plt)    
+
+#  # Crea la figura e gli assi per i subplot
+# fig, axs = plt.subplots(num_rows, num_cols, figsize=(20, 6 * num_rows))
+# for group in range(num_groups):
+#     # Calcola gli indici per la riga e la colonna correnti
+#     row = group // num_cols
+#     col = group % num_cols
+
+#     # Ottieni l'asse corrente
+#     ax = axs[row, col]
+
+#     # Calcola gli indici per l'attuale gruppo di dati
+#     start_idx = group * group_size
+#     end_idx = start_idx + group_size
+#     x_values_group = range(start_idx, end_idx)
+    
+#     # Estrai e calcola i dati
+#     # (qui vanno le tue operazioni sui dati)
+#     Tot_Production_group = [math.ceil(We[i] + Te[i] + ABS_Delta_Fe[i] + Ie[i]) for i in x_values_group]
+#     Tot_Demand2_group = [math.ceil(C1e[i] + C2) for i in x_values_group]
+#     # DRe2_group = [math.ceil(DRe2[i]) for i in x_values_group]
+#     # Crea il grafico nel subplot corrispondente
+#     ax.plot(x_values_group, Tot_Demand2_group, linewidth=2, label=f'Demand Group {group+1}')
+#     ax.plot(x_values_group, Tot_Production_group, label=f'Production Group {group+1}')
+#     # ax.plot(x_values_group, DRe2_group, label=f'Cost Group {group+1}')
+
+#     # Imposta titolo, etichette e altre opzioni per l'asse corrente
+#     ax.set_title(f"Demand and Production {group+1}")
+#     ax.set_xlabel("Round")
+#     ax.set_ylabel("Energy (MW)")
+#     ax.grid(True)
+#     ax.legend(loc='upper right')
+    
+# plt.tight_layout()
+# st.pyplot(plt)
