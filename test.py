@@ -290,7 +290,7 @@ def main():
     total_samples = len(Balance_array)
     
     # Crea i dati per il grafico a barre
-    categories = ['Equal to Zero','Greater than Zero']
+    categories = ['Equal to Zero','Higher than Zero']
     counts = [num_samples_equal_to_zero, num_samples_greater_than_zero]
     fractions = [count / total_samples for count in counts]
     
