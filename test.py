@@ -241,7 +241,7 @@ def main():
     plt.grid(True)
     st.pyplot(plt)
     plt.close()
-    # st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='color: blue;'>Cost Demand Mean: {DRe2_media} $/MW</h3>", unsafe_allow_html=True)
 # Graph 1.4: Price Offert Comparison
     # Funzione sigmoide
     # def sigmoid(x, L, k, x0):
